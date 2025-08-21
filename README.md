@@ -70,7 +70,7 @@ SummarizeTube is a modern web application that generates concise, structured sum
 ```
 SummarizeTube/
 ├── backend/           # FastAPI summarization service
-│   ├── app.py
+│   ├── api.py
 │   └── requirements.txt
 ├── frontend/          # Flask, HTML/CSS/JS, templates and static files
 │   ├── app.py
