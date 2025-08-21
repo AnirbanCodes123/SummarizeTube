@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Summarizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+    </div>
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fab fa-youtube"></i>
+                    <span>SummarizeTube</span>
+                </div>
+                <h1>AI-Powered YouTube Video Summarizer</h1>
+                <p>Transform any YouTube video into concise, actionable insights in seconds</p>
+            </div>
+        </header>
+
+        <main>
+            <!-- Input Section -->
+            <div class="input-section">
+                <div class="input-card">
+                    <div class="input-header">
+                        <i class="fas fa-link"></i>
+                        <span>Enter YouTube URL</span>
+                    </div>
+                    <div class="url-input-container">
+                        <div class="input-wrapper">
+                            <i class="fab fa-youtube input-icon"></i>
+                            <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." required>
+                            <button id="clear-btn" class="clear-btn" title="Clear URL">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button id="summarize-btn" class="summarize-btn">
+                            <i class="fas fa-magic"></i>
+                            <span>Summarize</span>
+                        </button>
+                    </div>
+                    <div class="error-message" id="error-message"></div>
+                </div>
+            </div>
+
+            <!-- Video Preview Section -->
+            <div class="video-preview-section" id="video-preview-section" style="display: none;">
+                <div class="video-preview-card">
+                    <div class="video-thumbnail-container">
+                        <img id="video-thumbnail" class="video-thumbnail" alt="Video thumbnail">
+                        <div class="play-overlay" id="play-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <div class="video-duration" id="video-duration"></div>
+                    </div>
+                    <div class="video-info">
+                        <h3 id="preview-title"></h3>
+                        <div class="video-meta">
+                            <span id="channel-name"></span>
+                            <span class="separator">•</span>
+                            <span id="view-count"></span>
+                            <span class="separator">•</span>
+                            <span id="upload-date"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- YouTube Player -->
+                <div class="youtube-player-container" id="youtube-player-container" style="display: none;">
+                    <div id="youtube-player"></div>
+                    <button class="close-player-btn" id="close-player-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Section -->
+            <div class="loading-container" id="loading-container">
+                <div class="loading-card">
+                    <div class="loading-animation">
+                        <div class="loading-spinner"></div>
+                        <div class="pulse-rings">
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                    </div>
+                    <h3>Analyzing Your Video</h3>
+                    <div class="loading-steps">
+                        <div class="step" data-step="1">
+                            <i class="fas fa-video"></i>
+                            <span>Fetching video information</span>
+                            <div class="step-indicator"></div>
+                        </div>
+                        <div class="step" data-step="2">
+                            <i class="fas fa-file-text"></i>
+                            <span>Extracting transcript</span>
+                            <div class="step-indicator"></div>
+                        </div>
+                        <div class="step" data-step="3">
+                            <i class="fas fa-brain"></i>
+                            <span>Generating AI summary</span>
+                            <div class="step-indicator"></div>
+                        </div>
+                    </div>
+                    <div class="loading-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-container" id="results-container">
+                <div class="results-header">
+                    <div class="results-title">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>Summary Generated</h2>
+                    </div>
+                    <div class="results-actions">
+                        <button id="copy-btn" class="action-btn copy-btn">
+                            <i class="fas fa-copy"></i>
+                            <span>Copy</span>
+                        </button>
+                        <button id="share-btn" class="action-btn share-btn">
+                            <i class="fas fa-share-alt"></i>
+                            <span>Share</span>
+                        </button>
+                        <button id="download-btn" class="action-btn download-btn">
+                            <i class="fas fa-download"></i>
+                            <span>Download</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="summary-content">
+                    <div class="video-summary-header">
+                        <div class="video-summary-thumbnail">
+                            <img id="summary-thumbnail" alt="Video thumbnail">
+                        </div>
+                        <div class="video-summary-info">
+                            <h3 id="summary-video-title"></h3>
+                            <div class="video-summary-meta">
+                                <span id="summary-channel"></span>
+                                <span class="separator">•</span>
+                                <span id="summary-duration"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-sections">
+                        <div class="summary-section key-points-section">
+                            <div class="section-header">
+                                <i class="fas fa-list-ul"></i>
+                                <h4>Key Points</h4>
+                                <span class="section-badge" id="key-points-count">0 points</span>
+                            </div>
+                            <ul id="key-points" class="key-points-list"></ul>
+                        </div>
+
+                        <div class="summary-section conclusion-section">
+                            <div class="section-header">
+                                <i class="fas fa-lightbulb"></i>
+                                <h4>Summary & Insights</h4>
+                            </div>
+                            <div id="conclusion" class="conclusion-content"></div>
+                        </div>
+
+                        <div class="summary-section tags-section">
+                            <div class="section-header">
+                                <i class="fas fa-tags"></i>
+                                <h4>Topics Covered</h4>
+                            </div>
+                            <div id="topic-tags" class="topic-tags"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <p>Powered by <span class="highlight">Llama3.1:8b</span></p>
+                    <p>Developed with ❤️ by <span class="highlight">AB</span></p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                    <a href="#" class="footer-link">Contact</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="toast-icon"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
